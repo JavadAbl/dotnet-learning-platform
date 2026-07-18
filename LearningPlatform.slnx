@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="API/API.csproj" />
+  <Project Path="Contracts/Contracts.csproj" />
+  <Project Path="Modules/Users/Users.csproj" />
+</Solution>
+ 

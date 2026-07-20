@@ -1,10 +1,11 @@
 
 using Contracts.Infrastructure.Database.Interceptors;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Users.Contracts.Repositories;
 using Users.Infrastructure.Database;
+using Users.Infrastructure.Database.Repositories;
 
 namespace Users;
 
@@ -16,12 +17,20 @@ public static class UsersModule
 
         mvcBuilder.AddApplicationPart(typeof(UsersModule).Assembly);
 
+        AddInfrastructure(services, configuration);
+
+        return services;
+    }
+
+
+    private static void AddInfrastructure(IServiceCollection services, IConfiguration configuration)
+    {
         services.AddDbContext<UsersDbContext>((sp, options) =>
         {
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
             options.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });
 
-        return services;
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

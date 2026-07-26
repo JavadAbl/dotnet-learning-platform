@@ -1,4 +1,4 @@
-﻿namespace Contracts.Domain.Exceptions;
+﻿namespace Contracts.Exceptions;
 
 public abstract class AppException : Exception
 {

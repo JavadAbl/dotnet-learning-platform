@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Contracts.Domain.Exceptions;
+namespace Contracts.Exceptions;
 
 public class ConflictException : AppException
 {

@@ -1,3 +1,4 @@
+using API.ExceptionHandlers;
 using Contracts;
 using Users;
 
@@ -7,8 +8,11 @@ var mvcBuilder = builder.Services.AddControllers();
 builder.Services.AddContractsModule();
 builder.Services.AddUsersModule(builder.Configuration, mvcBuilder);
 
-var app = builder.Build();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+var app = builder.Build();
+app.UseExceptionHandler();
 app.UseRouting();
 app.MapControllers();
 

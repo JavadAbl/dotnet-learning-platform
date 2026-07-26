@@ -1,15 +1,25 @@
+using Contracts.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Users.Contracts.Services;
+using Users.Dto.Request;
 
 namespace Users.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    internal class UsersController(IUserService userService) : ControllerBase
     {
 
+        [HttpGet()]
+        internal IActionResult UserGetMany()
+        {
+            return Ok([]);
+        }
 
-        [HttpGet("test")]
-        public IActionResult test()
+
+        [HttpPost()]
+        [ValidateDto]
+        internal IActionResult UserCreate([FromBody] UserCreateDto dto)
         {
             return Ok(321321);
         }

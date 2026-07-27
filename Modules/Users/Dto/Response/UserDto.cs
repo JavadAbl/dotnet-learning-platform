@@ -1,4 +1,6 @@
-﻿namespace Users.Dto.Response;
+﻿using Users.Domain.Enums;
+
+namespace Users.Dto.Response;
 
 internal record UserDto(
     int Id,
@@ -6,5 +8,5 @@ internal record UserDto(
     string LastName,
     string Mobile,
     bool IsActive,
-    string Role
+    Role Role
 );

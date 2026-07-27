@@ -1,4 +1,5 @@
 ﻿using Contracts.Contracts.Repositories;
+using Contracts.Dto.Response;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -20,8 +21,16 @@ public class Repository<T> : IRepository<T> where T : class
     public virtual async Task<T?> GetByIdAsync(object id)
         => await _dbSet.FindAsync(id);
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()
-        => await _dbSet.ToListAsync();
+    public virtual async Task<GetManyResponse<TDto>> FindMany<TDto>(
+     IQueryable<TDto> query)
+    {
+        var itemsTask = query.ToListAsync();
+        var countTask = query.CountAsync();
+        await Task.WhenAll(itemsTask, countTask);
+
+        return new GetManyResponse<TDto>(countTask.Result, itemsTask.Result);
+    }
+
 
     public virtual async Task<IEnumerable<T>> FindAsync(
         Expression<Func<T, bool>> predicate)
@@ -71,4 +80,8 @@ public class Repository<T> : IRepository<T> where T : class
 
     public virtual async Task<int> SaveChangesAsync()
         => await _context.SaveChangesAsync();
+
+    public IQueryable<T> GetQueryable() => _dbSet.AsQueryable<T>();
+
+
 }

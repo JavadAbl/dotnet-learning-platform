@@ -2,10 +2,9 @@
 
 
 public record GetManyQuery(
-    int Page,
-    string PageSize,
-    string LastName,
-    string SortBy,
-    string SortOrder,
-    string Search
+    int? Page,
+    int? PageSize,
+    string? SortBy,
+    string? SortOrder,
+    string? Search
 );

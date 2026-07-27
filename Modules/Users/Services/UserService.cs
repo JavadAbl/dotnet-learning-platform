@@ -1,13 +1,14 @@
 ﻿using Contracts.Dto.Request;
 using Contracts.Dto.Response;
-using Contracts.Providers;
+using Contracts.Extensions;
+using Users.Contracts.Repositories;
 using Users.Contracts.Services;
 using Users.Dto.Request;
 using Users.Dto.Response;
 
 namespace Users.Services;
 
-internal class UserService : IUserService
+internal class UserService(IUserRepository userRep) : IUserService
 {
     public Task SuperAdminCreate(string seedPass)
     {
@@ -29,9 +30,16 @@ internal class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query, TokenPayload context)
+    public async Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query)
     {
-        throw new NotImplementedException();
+        var searchableFields = new[] { "FirstName", "LastName", "Email" };
+
+        var usersQuery = userRep.GetQueryable().ApplyGetManyQuery(query, searchableFields)
+            .Select(user => new UserDto(Id: user.Id, FirstName: user.FirstName, LastName: user.LastName, Mobile: user.Mobile, IsActive: user.IsActive, Role: user.Role));
+
+        var users = await userRep.FindMany<UserDto>(usersQuery);
+
+        return users;
     }
 
     public Task UserUpdate(int userId, UserUpdateDto payload)

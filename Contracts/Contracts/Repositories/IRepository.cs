@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Contracts.Dto.Response;
+using System.Linq.Expressions;
 
 
 namespace Contracts.Contracts.Repositories;
@@ -7,7 +8,7 @@ public interface IRepository<T> where T : class
 {
     // ── Read ──────────────────────────────────────────────
     Task<T?> GetByIdAsync(object id);
-    Task<IEnumerable<T>> GetAllAsync();
+    Task<GetManyResponse<TDto>> FindMany<TDto>(IQueryable<TDto> query);
     Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
     Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
 
@@ -29,4 +30,7 @@ public interface IRepository<T> where T : class
 
     // ── Persistence ───────────────────────────────────────
     Task<int> SaveChangesAsync();
+
+    IQueryable<T> GetQueryable();
+
 }

@@ -1,7 +1,9 @@
+using Contracts.Dto.Request;
 using Contracts.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Users.Contracts.Services;
 using Users.Dto.Request;
+
 
 namespace Users.Controllers
 {
@@ -11,15 +13,15 @@ namespace Users.Controllers
     {
 
         [HttpGet()]
-        internal IActionResult UserGetMany()
+        public async Task<IActionResult> UserGetMany([FromQuery] GetManyQuery? query)
         {
-            return Ok([]);
+            return Ok(userService.UserGetMany(query));
         }
 
 
         [HttpPost()]
         [ValidateDto]
-        internal IActionResult UserCreate([FromBody] UserCreateDto dto)
+        public IActionResult UserCreate([FromBody] UserCreateDto dto)
         {
             return Ok(321321);
         }

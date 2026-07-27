@@ -1,6 +1,5 @@
 ﻿using Contracts.Dto.Request;
 using Contracts.Dto.Response;
-using Contracts.Providers;
 using Users.Dto.Request;
 using Users.Dto.Response;
 
@@ -10,7 +9,7 @@ internal interface IUserService
 {
     Task<UserDto> UserGetById(int id);
 
-    Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query, TokenPayload context);
+    Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query);
 
     Task<int> UserCreate(UserCreateDto payload);
 

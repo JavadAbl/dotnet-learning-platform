@@ -9,7 +9,7 @@ internal interface IUserService
 {
     Task<UserDto> UserGetById(int id);
 
-    Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query);
+    Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery? query);
 
     Task<int> UserCreate(UserCreateDto payload);
 

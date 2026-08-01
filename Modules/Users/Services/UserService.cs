@@ -30,7 +30,7 @@ internal class UserService(IUserRepository userRep) : IUserService
         throw new NotImplementedException();
     }
 
-    public async Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery query)
+    public async Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery? query)
     {
         var searchableFields = new[] { "FirstName", "LastName", "Email" };
 

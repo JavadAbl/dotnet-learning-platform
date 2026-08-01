@@ -15,7 +15,7 @@ namespace Users.Controllers
         [HttpGet()]
         public async Task<IActionResult> UserGetMany([FromQuery] GetManyQuery? query)
         {
-            return Ok(userService.UserGetMany(query));
+            return Ok(await userService.UserGetMany(query));
         }
 
 

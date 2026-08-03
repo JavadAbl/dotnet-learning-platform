@@ -1,77 +1,113 @@
 ﻿using Contracts.Contracts.Repositories;
+using Contracts.Dto.Request;
 using Contracts.Dto.Response;
+using Contracts.Exceptions;
+using Contracts.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Contracts.Infrastructure.Database.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntity : class
 {
     protected readonly DbContext _context;
-    protected readonly DbSet<T> _dbSet;
+    protected readonly DbSet<TEntity> _dbSet;
+    protected readonly Expression<Func<TEntity, TDto>> _selector;
 
-    public Repository(DbContext context)
+    public Repository(DbContext context, Expression<Func<TEntity, TDto>> selector)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _dbSet = _context.Set<T>();
+        _selector = selector ?? throw new ArgumentNullException(nameof(selector));
+        _dbSet = _context.Set<TEntity>();
     }
 
     // ── Read ──────────────────────────────────────────────
 
-    public virtual async Task<T?> GetByIdAsync(object id)
+    public virtual async Task<TEntity?> GetByIdAsync(object id)
         => await _dbSet.FindAsync(id);
 
-    public virtual async Task<GetManyResponse<TDto>> FindMany<TDto>(
-     IQueryable<TDto> query)
+    /* public virtual async Task<GetManyResponse<TDto>> FindMany<TDto>(
+      IQueryable<TDto> query)
+     {
+         var itemsTask = query.ToListAsync();
+         var countTask = query.CountAsync();
+         await Task.WhenAll(itemsTask, countTask);
+
+         return new GetManyResponse<TDto>(countTask.Result, itemsTask.Result);
+     }*/
+
+
+    public virtual async Task<GetManyResponse<TDto>> FindMany(
+      GetManyQuery? predicate,
+      string[] searchableFields)
     {
-        var itemsTask = query.ToListAsync();
-        var countTask = query.CountAsync();
+        var query = _dbSet.AsQueryable();
+
+        // Filter FIRST (on T, before projection)
+        if (predicate != null)
+            query = query.ApplyGetManyQuery(predicate, searchableFields);
+
+        // Project to TDto
+        if (_selector == null)
+            throw new ArgumentNullException(nameof(_selector),
+                "A selector is required to project T to TDto.");
+
+        IQueryable<TDto> dtoQuery = query.Select(_selector);
+
+        var itemsTask = dtoQuery.ToListAsync();
+        var countTask = _dbSet.CountAsync();
         await Task.WhenAll(itemsTask, countTask);
 
         return new GetManyResponse<TDto>(countTask.Result, itemsTask.Result);
     }
 
+    public virtual async Task<TDto> FirstOrDefaultAsync(
+     Expression<Func<TEntity, bool>> predicate)
 
-    public virtual async Task<IEnumerable<T>> FindAsync(
-        Expression<Func<T, bool>> predicate)
-        => await _dbSet.Where(predicate).ToListAsync();
+    {
+        var dto = await _dbSet
+            .Where(predicate)
+            .Select(_selector)
+            .FirstOrDefaultAsync();
 
-    public virtual async Task<T?> FirstOrDefaultAsync(
-        Expression<Func<T, bool>> predicate)
-        => await _dbSet.FirstOrDefaultAsync(predicate);
+        if (dto == null)
+            throw new NotFoundException();
+
+        return dto;
+    }
 
     // ── Create ────────────────────────────────────────────
 
-    public virtual async Task AddAsync(T entity)
+    public virtual async Task AddAsync(TEntity entity)
         => await _dbSet.AddAsync(entity);
 
-    public virtual async Task AddRangeAsync(IEnumerable<T> entities)
+    public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         => await _dbSet.AddRangeAsync(entities);
 
     // ── Update ────────────────────────────────────────────
 
-    public virtual void Update(T entity)
+    public virtual void Update(TEntity entity)
         => _dbSet.Update(entity);
 
-    public virtual void UpdateRange(IEnumerable<T> entities)
+    public virtual void UpdateRange(IEnumerable<TEntity> entities)
         => _dbSet.UpdateRange(entities);
 
     // ── Delete ────────────────────────────────────────────
 
-    public virtual void Remove(T entity)
+    public virtual void Remove(TEntity entity)
         => _dbSet.Remove(entity);
 
-    public virtual void RemoveRange(IEnumerable<T> entities)
+    public virtual void RemoveRange(IEnumerable<TEntity> entities)
         => _dbSet.RemoveRange(entities);
 
     // ── Query helpers ─────────────────────────────────────
 
     public virtual async Task<bool> AnyAsync(
-        Expression<Func<T, bool>> predicate)
+        Expression<Func<TEntity, bool>> predicate)
         => await _dbSet.AnyAsync(predicate);
 
     public virtual async Task<int> CountAsync(
-        Expression<Func<T, bool>>? predicate = null)
+        Expression<Func<TEntity, bool>>? predicate = null)
         => predicate is null
             ? await _dbSet.CountAsync()
             : await _dbSet.CountAsync(predicate);
@@ -81,7 +117,7 @@ public class Repository<T> : IRepository<T> where T : class
     public virtual async Task<int> SaveChangesAsync()
         => await _context.SaveChangesAsync();
 
-    public IQueryable<T> GetQueryable() => _dbSet.AsQueryable<T>();
+    public IQueryable<TEntity> GetQueryable() => _dbSet.AsQueryable<TEntity>();
 
 
 }

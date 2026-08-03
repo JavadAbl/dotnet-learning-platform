@@ -19,7 +19,14 @@ namespace Users.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpGet("{:id}")]
+        public async Task<IActionResult> UserGetById([FromRoute] int id)
+        {
+            return Ok(await userService.UserGetById(id));
+        }
+
+
+        [HttpPost("{:id}")]
         [ValidateDto]
         public IActionResult UserCreate([FromBody] UserCreateDto dto)
         {

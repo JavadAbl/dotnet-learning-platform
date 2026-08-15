@@ -3,7 +3,7 @@ using Contracts.Dto.Response;
 using System.Linq.Expressions;
 
 
-namespace Contracts.Contracts.Repositories;
+namespace Contracts.Infrastructure.Database.Repositories;
 
 public interface IRepository<TEntity, TDto> where TEntity : class
 {

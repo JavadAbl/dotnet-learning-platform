@@ -10,7 +10,6 @@ namespace Users.Services;
 internal class UserService(IUserRepository userRep) : IUserService
 {
 
-
     public Task SuperAdminCreate(string seedPass)
     {
         throw new NotImplementedException();

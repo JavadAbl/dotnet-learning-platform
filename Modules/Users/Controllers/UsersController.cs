@@ -26,11 +26,11 @@ namespace Users.Controllers
         }
 
 
-        [HttpPost("{:id}")]
-        [ValidateDto]
+        [HttpPost()]
+        // [ValidateDto]
         public IActionResult UserCreate([FromBody] UserCreateDto dto)
         {
-            return Ok(321321);
+            return Ok("test");
         }
     }
 }

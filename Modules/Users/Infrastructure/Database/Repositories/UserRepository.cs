@@ -6,7 +6,7 @@ using Users.Dto.Response;
 
 namespace Users.Infrastructure.Database.Repositories;
 
-internal class UserRepository : Repository<User, UserDto>, IUserRepository
+internal class UserRepository(UsersDbContext dbContext) : Repository<User, UserDto>(dbContext, ToDto), IUserRepository
 {
 
     private static readonly Expression<Func<User, UserDto>> ToDto =
@@ -18,10 +18,6 @@ internal class UserRepository : Repository<User, UserDto>, IUserRepository
          u.IsActive,
          u.Role);
 
-    public UserRepository(UsersDbContext dbContext)
-       : base(dbContext, ToDto)
-    {
-    }
 
 }
 

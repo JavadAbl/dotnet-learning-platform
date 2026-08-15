@@ -1,11 +1,14 @@
 
 using Contracts.Infrastructure.Database.Interceptors;
 using Contracts.Utils;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Users.Contracts.Repositories;
 using Users.Contracts.Services;
+using Users.Controllers;
+using Users.Dto.Request;
 using Users.Infrastructure.Database;
 using Users.Infrastructure.Database.Repositories;
 using Users.Services;
@@ -17,7 +20,6 @@ public static class UsersModule
     public static IServiceCollection AddUsersModule(this IServiceCollection services, IConfiguration configuration,
         IMvcBuilder mvcBuilder)
     {
-
 
         AddApi(services, configuration, mvcBuilder);
         AddServices(services);
@@ -35,10 +37,12 @@ public static class UsersModule
         mvcBuilder.ConfigureApplicationPartManager(manager =>
         {
             if (!manager.FeatureProviders.Any(p => p is InternalControllerFeatureProvider))
-            {
                 manager.FeatureProviders.Add(new InternalControllerFeatureProvider());
-            }
+
         });
+
+        // services.AddValidatorsFromAssemblyContaining<UserCreateDtoValidator>();
+        services.AddScoped<IValidator<UserCreateDto>, UserCreateDtoValidator>();
 
     }
 

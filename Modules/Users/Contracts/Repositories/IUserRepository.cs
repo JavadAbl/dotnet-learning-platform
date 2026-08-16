@@ -1,8 +1,8 @@
-﻿using Contracts.Infrastructure.Database.Repositories;
+﻿using Shared.Infrastructure.Database.Repositories;
 using Users.Domain.Models;
 using Users.Dto.Response;
 
-namespace Users.Contracts.Repositories;
+namespace Users.Shared.Repositories;
 
 internal interface IUserRepository : IRepository<User, UserDto>
 {

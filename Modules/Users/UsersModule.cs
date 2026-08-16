@@ -1,12 +1,12 @@
 
-using Contracts.Infrastructure.Database.Interceptors;
-using Contracts.Utils;
+using Shared.Infrastructure.Database.Interceptors;
+using Shared.Utils;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Users.Contracts.Repositories;
-using Users.Contracts.Services;
+using Users.Shared.Repositories;
+using Users.Shared.Services;
 using Users.Controllers;
 using Users.Dto.Request;
 using Users.Infrastructure.Database;
@@ -41,8 +41,7 @@ public static class UsersModule
 
         });
 
-        // services.AddValidatorsFromAssemblyContaining<UserCreateDtoValidator>();
-        services.AddScoped<IValidator<UserCreateDto>, UserCreateDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<UserCreateDtoValidator>(includeInternalTypes: true);
 
     }
 

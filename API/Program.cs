@@ -1,6 +1,6 @@
 using API.ExceptionHandlers;
-using Contracts;
-using Contracts.Filters;
+using Shared;
+using Shared.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Users;
 

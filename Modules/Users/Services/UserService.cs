@@ -1,9 +1,10 @@
-﻿using Contracts.Dto.Request;
-using Contracts.Dto.Response;
-using Users.Contracts.Repositories;
-using Users.Contracts.Services;
+﻿using Shared.Dto.Request;
+using Shared.Dto.Response;
+using Users.Shared.Repositories;
+using Users.Shared.Services;
 using Users.Dto.Request;
 using Users.Dto.Response;
+using Users.Domain.Models;
 
 namespace Users.Services;
 
@@ -20,9 +21,13 @@ internal class UserService(IUserRepository userRep) : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<int> UserCreate(UserCreateDto payload)
+    public async Task<int> UserCreate(UserCreateDto payload)
     {
-        throw new NotImplementedException();
+        await userRep.CheckDuplicate(p => p.Mobile == payload.Mobile);
+        var user = new User { FirstName = payload.FirstName, LastName = payload.LastName, Mobile = payload.Mobile, Password = "1" };
+        await userRep.AddAsync(user);
+        await userRep.SaveChangesAsync();
+        return user.Id;
     }
 
     public async Task<UserDto> UserGetById(int id)

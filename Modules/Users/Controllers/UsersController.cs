@@ -1,7 +1,7 @@
-using Contracts.Dto.Request;
-using Contracts.Filters;
+using Shared.Dto.Request;
+using Shared.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Users.Contracts.Services;
+using Users.Shared.Services;
 using Users.Dto.Request;
 
 
@@ -28,9 +28,10 @@ namespace Users.Controllers
 
         [HttpPost()]
         // [ValidateDto]
-        public IActionResult UserCreate([FromBody] UserCreateDto dto)
+        public async Task<IActionResult> UserCreate([FromBody] UserCreateDto dto)
         {
-            return Ok("test");
+            var userId = await userService.UserCreate(dto);
+            return Ok(userId);
         }
     }
 }

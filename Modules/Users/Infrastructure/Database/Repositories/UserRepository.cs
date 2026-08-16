@@ -1,6 +1,6 @@
-﻿using Contracts.Infrastructure.Database.Repositories;
+﻿using Shared.Infrastructure.Database.Repositories;
 using System.Linq.Expressions;
-using Users.Contracts.Repositories;
+using Users.Shared.Repositories;
 using Users.Domain.Models;
 using Users.Dto.Response;
 

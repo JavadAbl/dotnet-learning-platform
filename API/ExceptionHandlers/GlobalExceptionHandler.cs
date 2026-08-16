@@ -1,4 +1,4 @@
-﻿using Contracts.Exceptions;
+﻿using Shared.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,5 +1,5 @@
 
-using Contracts.Infrastructure.Database.Extensions;
+using Shared.Infrastructure.Database.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Users.Domain.Models;
 

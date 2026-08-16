@@ -1,8 +1,8 @@
 
 
-using Infrastructure.Database.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Shared.Infrastructure.Database.Configurations;
 using Users.Domain.Models;
 
 namespace Users.Infrastructure.Database.Configurations;

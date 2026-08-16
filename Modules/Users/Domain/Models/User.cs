@@ -1,5 +1,5 @@
 
-using Contracts.Domain.Models;
+using Shared.Domain.Models;
 using Users.Domain.Enums;
 
 namespace Users.Domain.Models;
@@ -10,7 +10,7 @@ public class User : BaseEntity
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Password { get; set; }
-    public required bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
     public Role Role { get; set; }
 
 }

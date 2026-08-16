@@ -1,9 +1,9 @@
-﻿using Contracts.Dto.Request;
-using Contracts.Dto.Response;
+﻿using Shared.Dto.Request;
+using Shared.Dto.Response;
 using Users.Dto.Request;
 using Users.Dto.Response;
 
-namespace Users.Contracts.Services;
+namespace Users.Shared.Services;
 
 internal interface IUserService
 {

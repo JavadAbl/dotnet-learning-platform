@@ -21,11 +21,11 @@ public interface IRepository<TEntity, TDto, TCreate, TUpdate> where TEntity : cl
 
 
     // ── Create ────────────────────────────────────────────
-    Task Add(TEntity entity);
+    Task<TEntity> Create(TCreate dto);
     Task AddRange(IEnumerable<TEntity> entities);
 
     // ── Update ────────────────────────────────────────────
-    Task UpdatePartial(TEntity entity);
+    Task<TEntity> UpdatePartial(object id, TEntity entity, TUpdate dto);
     void UpdateRange(IEnumerable<TEntity> entities);
 
     // ── Delete ────────────────────────────────────────────

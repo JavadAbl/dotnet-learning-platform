@@ -14,8 +14,8 @@ internal class UserService(IUserRepository userRep) : IUserService
     public async Task<int> UserCreate(UserCreateDto payload)
     {
         await userRep.CheckDuplicate(p => p.Mobile == payload.Mobile);
-        var user = new User { FirstName = payload.FirstName, LastName = payload.LastName, Mobile = payload.Mobile, Password = "1" };
-        await userRep.Add(user);
+        // var user = new User { FirstName = payload.FirstName, LastName = payload.LastName, Mobile = payload.Mobile, Password = "1" };
+        var user = await userRep.Create(payload);
         return user.Id;
     }
 
@@ -34,7 +34,7 @@ internal class UserService(IUserRepository userRep) : IUserService
     public async Task UserUpdate(int userId, UserUpdateDto payload)
     {
         var entity = await userRep.First(x => x.Id == userId);
-        await userRep.UpdatePartial(entity);
+        await userRep.UpdatePartial(userId, entity, payload);
     }
 
     public async Task UserDelete(int userId)

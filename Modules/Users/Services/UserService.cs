@@ -1,49 +1,47 @@
 ﻿using Shared.Dto.Request;
 using Shared.Dto.Response;
-using Users.Shared.Repositories;
-using Users.Shared.Services;
+using Users.Domain.Models;
 using Users.Dto.Request;
 using Users.Dto.Response;
-using Users.Domain.Models;
+using Users.Shared.Repositories;
+using Users.Shared.Services;
 
 namespace Users.Services;
 
 internal class UserService(IUserRepository userRep) : IUserService
 {
 
-    public Task SuperAdminCreate(string seedPass)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UserChangePasswordOtp(UserChangePasswordOtpDto payload)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<int> UserCreate(UserCreateDto payload)
     {
         await userRep.CheckDuplicate(p => p.Mobile == payload.Mobile);
         var user = new User { FirstName = payload.FirstName, LastName = payload.LastName, Mobile = payload.Mobile, Password = "1" };
-        await userRep.AddAsync(user);
-        await userRep.SaveChangesAsync();
+        await userRep.Add(user);
         return user.Id;
     }
 
-    public async Task<UserDto> UserGetById(int id)
+
+    public async Task<UserDto> UserGetDtoById(int id)
     {
-        return await userRep.FirstOrDefaultAsync(x => x.Id == id);
+        return await userRep.FirstDto(x => x.Id == id);
     }
 
-    public async Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery? query)
+    public async Task<GetManyResponse<UserDto>> UserGetDtoMany(GetManyQuery? query)
     {
         var searchableFields = new[] { "FirstName", "LastName", "Email" };
-        return await userRep.FindMany(query, searchableFields);
+        return await userRep.FindDtoMany(query, searchableFields);
     }
 
-    public Task UserUpdate(int userId, UserUpdateDto payload)
+    public async Task UserUpdate(int userId, UserUpdateDto payload)
     {
-        throw new NotImplementedException();
+        var entity = await userRep.First(x => x.Id == userId);
+        await userRep.UpdatePartial(entity);
+    }
+
+    public async Task UserDelete(int userId)
+    {
+        var entity = await userRep.First(x => x.Id == userId);
+        await userRep.Remove(entity);
+
     }
 }
 

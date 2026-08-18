@@ -1,13 +1,13 @@
-﻿using Shared.Dto.Request;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Dto.Request;
 using Shared.Dto.Response;
 using Shared.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using Shared.Infrastructure.Database.Extensions;
+using System.Linq.Expressions;
 
 namespace Shared.Infrastructure.Database.Repositories;
 
-public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntity : class
+public class Repository<TEntity, TDto, TCreate, TUpdate> : IRepository<TEntity, TDto, TCreate, TUpdate> where TEntity : class
 {
     protected readonly DbContext _context;
     protected readonly DbSet<TEntity> _dbSet;
@@ -22,7 +22,7 @@ public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntit
 
     // ── Read ──────────────────────────────────────────────
 
-    public virtual async Task<TEntity?> GetByIdAsync(object id)
+    public virtual async Task<TEntity?> GetById(object id)
         => await _dbSet.FindAsync(id);
 
     /* public virtual async Task<GetManyResponse<TDto>> FindMany<TDto>(
@@ -46,7 +46,7 @@ public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntit
         return await query.ToListAsync();
     }
 
-    public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+    public async Task<TEntity?> FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
     {
         var entity = await _dbSet
            .Where(predicate)
@@ -55,11 +55,22 @@ public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntit
         return entity;
     }
 
+    public virtual async Task<TEntity> First(
+      Expression<Func<TEntity, bool>> predicate)
+    {
+        var entity = await _dbSet
+            .Where(predicate)
+            .FirstOrDefaultAsync();
 
+        if (entity is null)
+            throw new NotFoundException();
+
+        return entity;
+    }
 
     // ── Dto ────────────────────────────────────────────
 
-    public virtual async Task<GetManyResponse<TDto>> FindManyDto(
+    public virtual async Task<GetManyResponse<TDto>> FindDtoMany(
      GetManyQuery? predicate,
      string[] searchableFields)
     {
@@ -124,35 +135,43 @@ public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntit
 
     // ── Create ────────────────────────────────────────────
 
-    public virtual async Task AddAsync(TEntity entity)
-        => await _dbSet.AddAsync(entity);
+    public virtual async Task Add(TEntity entity)
+    {
+        await _dbSet.AddAsync(entity);
+        await SaveChanges();
+    }
 
-    public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
+    public virtual async Task AddRange(IEnumerable<TEntity> entities)
         => await _dbSet.AddRangeAsync(entities);
 
     // ── Update ────────────────────────────────────────────
 
-    public virtual void Update(TEntity entity)
-        => _dbSet.Update(entity);
+    public virtual async Task UpdatePartial(TEntity entity)
+    {
+
+    }
 
     public virtual void UpdateRange(IEnumerable<TEntity> entities)
         => _dbSet.UpdateRange(entities);
 
     // ── Delete ────────────────────────────────────────────
 
-    public virtual void Remove(TEntity entity)
-        => _dbSet.Remove(entity);
+    public virtual async Task Remove(TEntity entity)
+    {
+        _dbSet.Remove(entity);
+        await SaveChanges();
+    }
 
     public virtual void RemoveRange(IEnumerable<TEntity> entities)
         => _dbSet.RemoveRange(entities);
 
     // ── Query helpers ─────────────────────────────────────
 
-    public virtual async Task<bool> AnyAsync(
+    public virtual async Task<bool> Any(
         Expression<Func<TEntity, bool>> predicate)
         => await _dbSet.AnyAsync(predicate);
 
-    public virtual async Task<int> CountAsync(
+    public virtual async Task<int> Count(
         Expression<Func<TEntity, bool>>? predicate = null)
         => predicate is null
             ? await _dbSet.CountAsync()
@@ -160,7 +179,7 @@ public class Repository<TEntity, TDto> : IRepository<TEntity, TDto> where TEntit
 
     // ── Persistence ───────────────────────────────────────
 
-    public virtual async Task<int> SaveChangesAsync()
+    public virtual async Task<int> SaveChanges()
         => await _context.SaveChangesAsync();
 
     public IQueryable<TEntity> GetQueryable() => _dbSet.AsQueryable<TEntity>();

@@ -7,16 +7,15 @@ namespace Users.Shared.Services;
 
 internal interface IUserService
 {
-    Task<UserDto> UserGetById(int id);
+    Task<UserDto> UserGetDtoById(int id);
 
-    Task<GetManyResponse<UserDto>> UserGetMany(GetManyQuery? query);
+    Task<GetManyResponse<UserDto>> UserGetDtoMany(GetManyQuery? query);
 
     Task<int> UserCreate(UserCreateDto payload);
 
     Task UserUpdate(int userId, UserUpdateDto payload);
 
-    Task SuperAdminCreate(string seedPass);
+    Task UserDelete(int userId);
 
-    Task UserChangePasswordOtp(UserChangePasswordOtpDto payload);
 }
 

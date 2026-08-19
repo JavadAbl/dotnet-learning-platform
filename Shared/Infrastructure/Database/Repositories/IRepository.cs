@@ -21,7 +21,8 @@ public interface IRepository<TEntity, TDto, TCreate, TUpdate> where TEntity : cl
 
 
     // ── Create ────────────────────────────────────────────
-    Task<TEntity> Create(TCreate dto);
+    Task<TEntity> CreateFromDto(TCreate dto);
+    Task<TEntity> Create(TEntity entity);
     Task AddRange(IEnumerable<TEntity> entities);
 
     // ── Update ────────────────────────────────────────────

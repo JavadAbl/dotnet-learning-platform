@@ -19,6 +19,5 @@ internal class UserRepository(UsersDbContext dbContext) : Repository<User, UserD
          u.IsActive,
          u.Role);
 
-
 }
 

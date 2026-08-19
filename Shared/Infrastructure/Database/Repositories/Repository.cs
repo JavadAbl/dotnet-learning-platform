@@ -136,7 +136,15 @@ public class Repository<TEntity, TDto, TCreate, TUpdate> : IRepository<TEntity, 
 
     // ── Create ────────────────────────────────────────────
 
-    public virtual async Task<TEntity> Create(TCreate dto)
+
+    public async Task<TEntity> Create(TEntity entity)
+    {
+        _dbSet.Add(entity);
+        await SaveChanges();
+        return entity;
+    }
+
+    public virtual async Task<TEntity> CreateFromDto(TCreate dto)
     {
         // --- Recommended approach if you have a mapper injected (e.g., AutoMapper) ---
         // var entity = _mapper.Map<TEntity>(dto);

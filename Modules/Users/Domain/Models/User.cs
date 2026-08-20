@@ -12,5 +12,7 @@ public class User : BaseEntity
     public required string Password { get; set; }
     public bool IsActive { get; set; } = true;
     public Role Role { get; set; }
+    public string? Description { get; set; }
+
 
 }

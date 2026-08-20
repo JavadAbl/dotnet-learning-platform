@@ -26,7 +26,6 @@ public interface IRepository<TEntity, TDto, TCreate, TUpdate> where TEntity : cl
     Task AddRange(IEnumerable<TEntity> entities);
 
     // ── Update ────────────────────────────────────────────
-    Task<TEntity> UpdatePartial(object id, TEntity entity, TUpdate dto);
     void UpdateRange(IEnumerable<TEntity> entities);
 
     // ── Delete ────────────────────────────────────────────

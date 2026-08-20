@@ -8,5 +8,6 @@ internal record UserDto(
     string LastName,
     string Mobile,
     bool IsActive,
-    Role Role
+    Role Role,
+    string? Description
 );

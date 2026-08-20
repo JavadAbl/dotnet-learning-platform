@@ -7,5 +7,7 @@ namespace Users.Shared.Repositories;
 
 internal interface IUserRepository : IRepository<User, UserDto, UserCreateDto, UserUpdateDto>
 {
+
+    internal Task Update(int id, UserUpdateDto payload);
 }
 

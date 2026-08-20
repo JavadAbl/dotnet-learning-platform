@@ -4,5 +4,6 @@ internal record UserUpdateDto(
     string? FirstName,
     string? LastName,
     string? Mobile,
-    bool? IsActive
+    bool? IsActive,
+    string? Description
 );

@@ -1,4 +1,4 @@
-dotnet ef migrations add m1 --project Modules/Users/Users.csproj --startup-project API/API.csproj
+dotnet ef migrations add user_add_description --project Modules/Users/Users.csproj --startup-project API/API.csproj
 dotnet ef database update --project Modules/Users/Users.csproj --startup-project API/API.csproj
 
 dotnet watch --project API/API.csproj

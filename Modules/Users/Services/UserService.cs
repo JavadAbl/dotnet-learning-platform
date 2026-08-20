@@ -33,8 +33,7 @@ internal class UserService(IUserRepository userRep) : IUserService
 
     public async Task UserUpdate(int userId, UserUpdateDto payload)
     {
-        var entity = await userRep.First(x => x.Id == userId);
-        await userRep.UpdatePartial(userId, entity, payload);
+        await userRep.Update(userId, payload);
     }
 
     public async Task UserDelete(int userId)

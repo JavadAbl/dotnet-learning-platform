@@ -164,26 +164,6 @@ public class Repository<TEntity, TDto, TCreate, TUpdate> : IRepository<TEntity, 
         => await _dbSet.AddRangeAsync(entities);
 
     // ── Update ────────────────────────────────────────────
-
-    public virtual async Task<TEntity> UpdatePartial(object id, TEntity entity, TUpdate dto)
-    {
-        if (entity is null)
-            throw new NotFoundException();
-
-        // --- Recommended approach if you have a mapper injected ---
-        // _mapper.Map(dto, entity); // Maps dto onto the existing tracked entity
-
-        // --- Fallback approach using Reflection ---
-        MapProperties(dto, entity);
-
-        // Because the entity was fetched via FindAsync, it is tracked by EF Core.
-        // EF Core's ChangeTracker automatically detects which properties actually changed 
-        // and will only generate SQL UPDATE statements for those specific columns (True Partial Update).
-        await SaveChanges();
-
-        return entity;
-    }
-
     public virtual void UpdateRange(IEnumerable<TEntity> entities)
         => _dbSet.UpdateRange(entities);
 
